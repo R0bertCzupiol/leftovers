@@ -2,6 +2,7 @@ package elbv2
 
 import (
 	"fmt"
+	"runtime"
 	"strings"
 
 	awselbv2 "github.com/aws/aws-sdk-go/service/elbv2"
@@ -37,6 +38,20 @@ func (t TargetGroups) List(filter string) ([]common.Deletable, error) {
 		r := NewTargetGroup(t.client, g.TargetGroupName, g.TargetGroupArn)
 
 		if !strings.Contains(r.Name(), filter) {
+			continue
+		}
+
+		var check = false
+		for _, element := range common.CriticalFilter {
+			if strings.Contains(r.Name(), element) {
+				check = true
+				_, file, _, _ := runtime.Caller(1)
+				if common.Debug {
+					println(file + " skipped value by CriticalFilter: " + r.Name())
+				}
+			}
+		}
+		if check {
 			continue
 		}
 

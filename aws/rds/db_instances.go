@@ -2,6 +2,7 @@ package rds
 
 import (
 	"fmt"
+	"runtime"
 	"strings"
 
 	awsrds "github.com/aws/aws-sdk-go/service/rds"
@@ -41,6 +42,20 @@ func (d DBInstances) List(filter string) ([]common.Deletable, error) {
 		r := NewDBInstance(d.client, db.DBInstanceIdentifier)
 
 		if !strings.Contains(r.Name(), filter) {
+			continue
+		}
+
+		var check = false
+		for _, element := range common.CriticalFilter {
+			if strings.Contains(r.Name(), element) {
+				check = true
+				_, file, _, _ := runtime.Caller(1)
+				if common.Debug {
+					println(file + " skipped value by CriticalFilter: " + r.Name())
+				}
+			}
+		}
+		if check {
 			continue
 		}
 

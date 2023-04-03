@@ -2,6 +2,7 @@ package route53
 
 import (
 	"fmt"
+	"runtime"
 	"strings"
 
 	awsroute53 "github.com/aws/aws-sdk-go/service/route53"
@@ -49,6 +50,20 @@ func (z HostedZones) List(filter string) ([]common.Deletable, error) {
 			continue
 		}
 
+		var check = false
+		for _, element := range common.CriticalFilter {
+			if strings.Contains(r.Name(), element) {
+				check = true
+				_, file, _, _ := runtime.Caller(1)
+				if common.Debug {
+					println(file + " skipped value by CriticalFilter: " + r.Name())
+				}
+			}
+		}
+		if check {
+			continue
+		}
+
 		proceed := z.logger.PromptWithDetails(r.Type(), r.Name())
 		if !proceed {
 			continue
@@ -72,6 +87,16 @@ func (z HostedZones) recordSetsContainFilter(hostedZoneId *string, filter string
 	}
 
 	for _, record := range records {
+
+		for _, element := range common.CriticalFilter {
+			if strings.Contains(*record.Name, element) {
+				println("Zones skipped DNS record by CriticalFilter: " + *record.Name)
+				return false
+			}
+		}
+		if (*record.Name == "k8s.sgr-cloud.sh.") || (*record.Name == "ci.k8s.sgr-labs.com.") {
+			return false
+		}
 		if strings.Contains(*record.Name, filter) {
 			return true
 		}
