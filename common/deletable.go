@@ -5,3 +5,7 @@ type Deletable interface {
 	Name() string
 	Type() string
 }
+
+var CriticalFilter = [5]string{"prod", "live", "qa", "stage", "master"}
+
+var Debug bool = false

@@ -7,11 +7,14 @@ import (
 	awslib "github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
+
 	awsec2 "github.com/aws/aws-sdk-go/service/ec2"
 	awseks "github.com/aws/aws-sdk-go/service/eks"
+
 	awselb "github.com/aws/aws-sdk-go/service/elb"
 	awselbv2 "github.com/aws/aws-sdk-go/service/elbv2"
 	awsiam "github.com/aws/aws-sdk-go/service/iam"
+
 	awskms "github.com/aws/aws-sdk-go/service/kms"
 	awsrds "github.com/aws/aws-sdk-go/service/rds"
 	awsroute53 "github.com/aws/aws-sdk-go/service/route53"
@@ -19,11 +22,14 @@ import (
 	awssts "github.com/aws/aws-sdk-go/service/sts"
 	"github.com/fatih/color"
 	"github.com/genevieve/leftovers/app"
+
 	"github.com/genevieve/leftovers/aws/ec2"
 	"github.com/genevieve/leftovers/aws/eks"
+
 	"github.com/genevieve/leftovers/aws/elb"
 	"github.com/genevieve/leftovers/aws/elbv2"
 	"github.com/genevieve/leftovers/aws/iam"
+
 	"github.com/genevieve/leftovers/aws/kms"
 	"github.com/genevieve/leftovers/aws/rds"
 	"github.com/genevieve/leftovers/aws/route53"

@@ -2,6 +2,7 @@ package iam
 
 import (
 	"fmt"
+	"runtime"
 	"strings"
 
 	awsiam "github.com/aws/aws-sdk-go/service/iam"
@@ -39,6 +40,20 @@ func (o Roles) List(filter string) ([]common.Deletable, error) {
 		r := NewRole(o.client, o.policies, role.RoleName)
 
 		if !strings.Contains(r.Name(), filter) {
+			continue
+		}
+
+		var check = false
+		for _, element := range common.CriticalFilter {
+			if strings.Contains(r.Name(), element) {
+				check = true
+				_, file, _, _ := runtime.Caller(1)
+				if common.Debug == true {
+					println(file + " skipped value by CriticalFilter: " + r.Name())
+				}
+			}
+		}
+		if check {
 			continue
 		}
 

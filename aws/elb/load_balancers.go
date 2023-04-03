@@ -2,6 +2,7 @@ package elb
 
 import (
 	"fmt"
+	"runtime"
 	"strings"
 
 	awselb "github.com/aws/aws-sdk-go/service/elb"
@@ -39,6 +40,19 @@ func (l LoadBalancers) List(filter string) ([]common.Deletable, error) {
 		r := NewLoadBalancer(l.client, lb.LoadBalancerName)
 
 		if !strings.Contains(r.Name(), filter) {
+			continue
+		}
+		var check = false
+		for _, element := range common.CriticalFilter {
+			if strings.Contains(r.Name(), element) {
+				check = true
+				_, file, _, _ := runtime.Caller(1)
+				if false {
+					println(file + " skipped value by CriticalFilter: " + r.Name())
+				}
+			}
+		}
+		if check {
 			continue
 		}
 

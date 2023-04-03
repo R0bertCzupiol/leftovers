@@ -2,6 +2,7 @@ package s3
 
 import (
 	"fmt"
+	"runtime"
 	"strings"
 
 	awss3 "github.com/aws/aws-sdk-go/service/s3"
@@ -46,6 +47,20 @@ func (b Buckets) List(filter string) ([]common.Deletable, error) {
 		}
 
 		if !b.manager.IsInRegion(r.Name()) {
+			continue
+		}
+
+		var check = false
+		for _, element := range common.CriticalFilter {
+			if strings.Contains(r.Name(), element) {
+				check = true
+				_, file, _, _ := runtime.Caller(1)
+				if common.Debug == true {
+					println(file + " skipped value by CriticalFilter: " + r.Name())
+				}
+			}
+		}
+		if check {
 			continue
 		}
 

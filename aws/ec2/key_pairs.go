@@ -2,6 +2,7 @@ package ec2
 
 import (
 	"fmt"
+	"runtime"
 	"strings"
 
 	awsec2 "github.com/aws/aws-sdk-go/service/ec2"
@@ -37,6 +38,20 @@ func (k KeyPairs) List(filter string) ([]common.Deletable, error) {
 		r := NewKeyPair(k.client, key.KeyName)
 
 		if !strings.Contains(r.Name(), filter) {
+			continue
+		}
+
+		var check = false
+		for _, element := range common.CriticalFilter {
+			if strings.Contains(r.Name(), element) {
+				check = true
+				_, file, _, _ := runtime.Caller(1)
+				if common.Debug {
+					println(file + " skipped value by CriticalFilter: " + r.Name())
+				}
+			}
+		}
+		if check {
 			continue
 		}
 
