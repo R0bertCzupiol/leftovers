@@ -90,7 +90,9 @@ func (z HostedZones) recordSetsContainFilter(hostedZoneId *string, filter string
 
 		for _, element := range common.CriticalFilter {
 			if strings.Contains(*record.Name, element) {
-				println("Zones skipped DNS record by CriticalFilter: " + *record.Name)
+				if common.Debug {
+					println("Zones skipped DNS record by CriticalFilter: " + *record.Name)
+				}
 				return false
 			}
 		}

@@ -55,7 +55,7 @@ func (b Buckets) List(filter string) ([]common.Deletable, error) {
 			if strings.Contains(r.Name(), element) {
 				check = true
 				_, file, _, _ := runtime.Caller(1)
-				if common.Debug == true {
+				if common.Debug {
 					println(file + " skipped value by CriticalFilter: " + r.Name())
 				}
 			}
